@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>客户信息查询</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="../../static/css/font.css">
+		<link rel="stylesheet" href="../../static/css/weadmin.css">
+		<script type="text/javascript" src="../../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../../static/js/admin.js" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">客户基本信息</a>
+        <a>
+          <cite>客户信息查询</cite></a>
+      </span>
+			<a class="layui-btn layui-btn-sm" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height:30px">&#x1002;</i></a>
+		</div>
+		
+		<div class="weadmin-body">
+			<div class="layui-row">
+					用户信息搜索：
+					<div class="layui-inline">
+						<input type="text" name="username" placeholder="请输入查询账号" autocomplete="off" class="layui-input" id="inputContent">
+					</div>&nbsp&nbsp
+					<button class="layui-btn" lay-submit="" lay-filter="sreach" id='queryCustomer'><i class="layui-icon">&#xe615;</i></button>
+					<button class="layui-btn" id="reset">重置</button>
+			</div>
+			<table class="layui-table" id="memberList">
+				
+			</table>
+		</div>
+		<script type="text/javascript">
+			layui.config({
+			  base: '../../static/js/'
+			  ,version: '101100'
+			}).use('admin');
+			layui.use(['jquery','admin'], function(){
+				var $ = layui.jquery;
+				$('#queryCustomer').click(function(){
+					var content = $('#inputContent').val();
+					if (content == null || content == '') {
+						layer.msg('请输入查询内容', {time:800});
+						return
+					}
+					
+					$.ajax({
+				        type:"GET",
+				        url:"/hey-web/queryCustomerInfo?account="+content,
+				        success:function(data){
+				           var dataJson = eval('(' + data + ')')[0];
+				           if (dataJson == undefined ) {
+				        	  	$('#tableHead').remove();
+								$('#tableBody').remove();
+								layer.msg('没有该账户信息', {time:800});
+				           } else {
+				        	   var table = "<thead id='tableHead'><tr><th>ID</th><th>市县</th><th>机构号</th><th>卡号</th><th>账号</th><th>户名</th><th>余额</th><th>利息基数</th><th>结息金额</th></tr></thead>"
+				        	   + "<tbody id='tableBody'><tr data-id='1'><td>"+dataJson.userId+"</td><td>"+dataJson.areaCode+"</td><td>"+dataJson.orgCode+
+				        	   "</td><td>"+dataJson.cardCode+"</td><td>"+dataJson.account+"</td><td>"+dataJson.userName+"</td><td>"+dataJson.balance+
+				        	   "</td><td>"+dataJson.interestBase+"</td><td>"+dataJson.interestBalance+"</td></tr></tbody>";
+				        	   $('#memberList').html(table);
+				           }
+				        }
+				    }); 
+				});
+				$('#reset').click(function(){
+					$('#inputContent').val("");
+				});
+			});
+		</script>
+	</body>
+</html>

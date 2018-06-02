@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:org/springframework/beans/factory/xml/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/context classpath:org/springframework/context/config/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd"
+	default-autowire="byName">
+
+	<!-- 引入配置文件 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:configs/jdbc.properties</value>
+				<value>classpath:configs/redis.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<import resource="context-mybatis.xml" />
+	<import resource="context-redis.xml" />
+
+</beans>
